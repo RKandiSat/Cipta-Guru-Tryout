@@ -56,7 +56,9 @@ main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:22px 16p
 input.i,select.i,textarea.i{width:100%;padding:12px 14px;border:var(--bw) solid var(--ink);border-radius:var(--rs);font-family:var(--fb);font-size:.97rem;font-weight:700;background:#fff;outline:none;color:var(--ink)}
 [data-tema=C] input.i,[data-tema=C] select.i,[data-tema=C] textarea.i{border-color:#C9D3E8;font-weight:500}
 input.i:focus,select.i:focus,textarea.i:focus{box-shadow:0 0 0 4px var(--a1)}
-.pw{position:relative}.pw .eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:1.2rem}
+.pw{position:relative}.pw .eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;line-height:0;color:#64748B;background:none;border:0;padding:4px;cursor:pointer;border-radius:8px}
+.pw .eye svg{display:block;width:20px;height:20px}
+.pw .eye:hover{background:#EEF2FF;color:#4F46E5}
 .galat{background:#FEE2E2;border:var(--bw) solid var(--bad);color:#991B1B;border-radius:var(--rs);padding:10px 14px;margin-top:12px;font-size:.88rem}
 .tag{display:inline-block;padding:3px 12px;border-radius:999px;border:2px solid var(--ink);font-size:.7rem;font-weight:800;letter-spacing:.5px}
 [data-tema=C] .tag{border-width:1px}
@@ -261,8 +263,11 @@ const JENIS={tahun:{nama:'Tryout Akhir Tahun',pendek:'Akhir Tahun',ikon:'📅'},
 const jnNama=j=>(JENIS[j]||JENIS.tahun).pendek;
 function gantiJenis(j){if(!JENIS[j]||G.jenis===j)return;G.jenis=j;G.bm='';G.bk='';G.bt='';G.hasilKode='';render()}
 function galat(m){const g=$('galat');if(g){g.textContent=m;g.style.display=m?'block':'none'}else if(m)toast(m,true)}
-function inputSandi(id,ph){return `<div class="pw"><input class="i" id="${id}" type="password" placeholder="${ph}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><button type="button" class="eye" aria-label="Tampilkan atau sembunyikan" onclick="tglMata('${id}',this)">👁</button></div>`}
-function tglMata(id,b){const i=$(id);if(!i)return;const l=i.type==='password';i.type=l?'text':'password';b.textContent=l?'🙈':'👁';clearTimeout(b._t);if(l)b._t=setTimeout(()=>{i.type='password';b.textContent='👁'},20000)}
+const MATA_IKON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+const MATA_BUKA=MATA_IKON+'</svg>';
+const MATA_SILANG=MATA_IKON+'<line x1="3" y1="21" x2="21" y2="3"/></svg>';
+function inputSandi(id,ph){return `<div class="pw"><input class="i" id="${id}" type="password" placeholder="${ph}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><button type="button" class="eye" aria-label="Tampilkan passcode" onclick="tglMata('${id}',this)">${MATA_BUKA}</button></div>`}
+function tglMata(id,b){const i=$(id);if(!i)return;const l=i.type==='password';i.type=l?'text':'password';b.innerHTML=l?MATA_SILANG:MATA_BUKA;b.setAttribute('aria-label',l?'Sembunyikan passcode':'Tampilkan passcode');clearTimeout(b._t);if(l)b._t=setTimeout(()=>{i.type='password';b.innerHTML=MATA_BUKA;b.setAttribute('aria-label','Tampilkan passcode')},20000)}
 function header(){const h=$('top');const nm=S.peran?esc(S.nama||(S.peran==='guru'?'Guru':'Murid')):'';
  h.innerHTML=`<div class="logo" onclick="go('${S.peran==='murid'?'/murid':S.peran==='guru'?'/guru':'/'}')"><div class="ic">T</div><div>Cipta Guru <em>Tryout</em><small>SERU · CERDAS · SIAP UJIAN</small></div></div><div class="sp"></div>${S.peran?`<span class="sub" style="font-size:.82rem">${S.peran==='guru'?'🧑‍🏫':'🧑‍🎓'} ${nm}</span><button class="btn sm" onclick="keluar()">Keluar</button>`:''}`}
 async function render(){
